@@ -9,10 +9,10 @@ const columns = [
     { label: 'Reason for Visit', fieldName: 'Reason_for_Visit__c', type: 'text', initialWidth: 250 },
     { label: 'Scheduled Time', fieldName: 'StartTime', type: 'date', // Use 'date' type for better formatting
         typeAttributes: {
-            timeZone: 'Asia/Kolkata', // Specify IST
+            timeZone: 'Asia/Kolkata', 
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true // Use AM/PM format
+            hour12: true 
         } },
     { label: 'Doctor', fieldName: 'DoctorName', type: 'text' },
     {
@@ -81,7 +81,7 @@ export default class PatientCheckIn extends LightningElement {
     }
 
     confirmCheckIn() {
-        this.closeModal(); // Close modal immediately for better UX
+        this.closeModal(); 
         checkInPatient({
             appointmentId: this.selectedAppointmentId,
             arrivalTime: this.arrivalTime
