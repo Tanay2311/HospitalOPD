@@ -1,0 +1,119 @@
+<template>
+    <lightning-card title="Appointment Scheduler" icon-name="standard:event">
+        <div class="slds-grid slds-gutters slds-p-around_medium">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                <lightning-combobox
+                    name="department"
+                    label="Filter by Department"
+                    value={selectedDepartment}
+                    placeholder="All Departments"
+                    options={departmentOptions}
+                    onchange={handleDepartmentChange}>
+                </lightning-combobox>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                <lightning-combobox
+                    name="doctor"
+                    label="Filter by Doctor"
+                    value={selectedDoctorId}
+                    placeholder="All Doctors"
+                    options={doctorOptions}
+                    onchange={handleDoctorChange}>
+                </lightning-combobox>
+            </div>
+        </div>
+
+        <div class="slds-m-around_medium calendar-container" lwc:dom="manual"></div>
+    </lightning-card>
+
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+    </template>
+
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title slds-hyphenate">Appointment Details</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p><strong>Patient:</strong> {selectedEvent.title}</p>
+                    <p><strong>Doctor:</strong> {selectedEvent.doctorName}</p>
+                    <p><strong>Time:</strong> 
+                        <lightning-formatted-date-time value={selectedEvent.start} year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+                        &ndash;
+                        <lightning-formatted-date-time value={selectedEvent.end} hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+                    </p>
+                    <lightning-combobox
+                        name="status"
+                        label="Status"
+                        value={selectedEvent.status}
+                        options={statusOptions}
+                        onchange={handleStatusChange}
+                        class="slds-m-top_medium">
+                    </lightning-combobox>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
+                    <lightning-button label="Delete" variant="destructive" onclick={handleDelete} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button label="Save" variant="brand" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isPatientModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-modal__title slds-hyphenate">Book Appointment</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input type="search" 
+                        label="Search Patient by Name or ID"
+                        value={patientSearchTerm}
+                        onchange={handlePatientSearch}>
+                    </lightning-input>
+                    <template if:true={patientOptions.length}>
+                        <lightning-combobox
+                            name="patient"
+                            label="Select Patient"
+                            value={selectedPatientId}
+                            options={patientOptions}
+                            onchange={handlePatientSelect}
+                            required>
+                        </lightning-combobox>
+                    </template>
+
+                    <template if:true={selectedPatientId}>
+                        <div class="slds-m-top_small slds-grid slds-grid_vertical-align-center">
+                            <span class="slds-badge slds-theme_success">{selectedPatientName}</span>
+                            <lightning-button-icon
+                                class="slds-m-left_x-small"
+                                icon-name="utility:close"
+                                variant="border-filled"
+                                alternative-text="Clear selection"
+                                onclick={clearSelectedPatient}>
+                            </lightning-button-icon>
+                        </div>
+                    </template>
+                    
+                    <lightning-textarea
+                        label="Reason for Visit"
+                        value={reasonForVisit}
+                        onchange={handleReasonChange}
+                        required
+                        class="slds-m-top_small"
+                    ></lightning-textarea>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={closePatientModal}></lightning-button>
+                    <lightning-button label="Book" variant="brand" onclick={confirmAppointment} class="slds-m-left_x-small" disabled={isBookDisabled}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Patient & Doctor Viewer" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+
+            <h2 class="slds-text-heading_small">Patients</h2>
+            <lightning-datatable
+                key-field="Id"
+                data={patients}
+                columns={patientColumns}
+                hide-checkbox-column="true"
+                class="slds-m-bottom_large">
+            </lightning-datatable>
+
+            <h2 class="slds-text-heading_small">Doctors</h2>
+            <lightning-datatable
+                key-field="Id"
+                data={doctors}
+                columns={doctorColumns}
+                hide-checkbox-column="true">
+            </lightning-datatable>
+
+        </div>
+    </lightning-card>
+</template>

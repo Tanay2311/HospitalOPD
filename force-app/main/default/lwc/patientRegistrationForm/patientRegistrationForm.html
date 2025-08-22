@@ -1,0 +1,217 @@
+<template>
+  <lightning-card title="Patient Registration" icon-name="standard:people">
+    
+    <!-- Progress Indicator -->
+    <div class="slds-p-horizontal_medium slds-p-top_medium">
+      <lightning-progress-indicator 
+          current-step={currentStep} 
+          type="base" 
+          variant="base">
+        <lightning-progress-step label="Patient" value="1"></lightning-progress-step>
+        <lightning-progress-step label="Insurance" value="2"></lightning-progress-step>
+        <lightning-progress-step label="Medical History" value="3"></lightning-progress-step>
+      </lightning-progress-indicator>
+    </div>
+
+    <!-- Step 1: Patient -->
+    <template if:true={isStep1}>
+      <div class="slds-p-around_medium slds-grid slds-wrap">
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
+          <lightning-input 
+              label="Patient Name"
+              name="patientName"
+              data-section="patient"
+              value={patient.patientName}
+              onchange={handleChange}
+              required>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2">
+          <lightning-input 
+              type="date"
+              label="Date of Birth"
+              name="dateOfBirth"
+              data-section="patient"
+              value={patient.dateOfBirth}
+              onchange={handleChange}
+              required>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small slds-m-top_small">
+          <lightning-input 
+              type="tel"
+              label="Contact Number"
+              name="contactNumber"
+              data-section="patient"
+              value={patient.contactNumber}
+              onchange={handleChange}
+              required
+              pattern="[0-9]{10}"
+              message-when-pattern-mismatch="Contact Number must be exactly 10 digits."
+              message-when-bad-input="Enter only numbers (0-9)">
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-top_small">
+          <lightning-input 
+              type="email"
+              label="Email"
+              name="email"
+              data-section="patient"
+              value={patient.email}
+              onchange={handleChange}>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-m-top_small">
+          <lightning-textarea 
+              label="Address"
+              name="address"
+              data-section="patient"
+              value={patient.address}
+              onchange={handleChange}>
+          </lightning-textarea>
+        </div>
+
+          <lightning-combobox
+            name="gender"
+            label="Gender"
+            data-section="patient"
+            placeholder="Select Gender"
+            options={genderOptions}
+            value={patient.gender}
+            onchange={handleChange}
+            required
+            class="slds-m-bottom_medium">
+        </lightning-combobox>
+      </div>
+    </template>
+
+    <!-- Step 2: Insurance -->
+    <template if:true={isStep2}>
+      <div class="slds-p-around_medium slds-grid slds-wrap">
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
+          <lightning-input 
+              label="Provider"
+              name="provider"
+              data-section="insurance"
+              value={insurance.provider}
+              onchange={handleChange}>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2">
+          <lightning-textarea 
+              label="Policy Number"
+              name="policyNumber"
+              data-section="insurance"
+              value={insurance.policyNumber}
+              onchange={handleChange}>
+          </lightning-textarea>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small slds-m-top_small">
+          <lightning-input 
+              type="date"
+              label="Valid Till"
+              name="validTill"
+              data-section="insurance"
+              value={insurance.validTill}
+              onchange={handleChange}>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-top_small">
+          <lightning-input 
+              type="checkbox"
+              label="Is Active"
+              name="isActive"
+              data-section="insurance"
+              checked={insurance.isActive}
+              onchange={handleCheckbox}>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-m-top_small slds-text-color_weak">
+          <em>Tip:</em> Leave this step blank if the patient has no insurance.  
+          If you enter any insurance field, <strong>Provider</strong> and <strong>Policy Number</strong> will be required on submit.
+        </div>
+
+      </div>
+    </template>
+
+    <!-- Step 3: Medical History -->
+    <template if:true={isStep3}>
+      <div class="slds-p-around_medium slds-grid slds-wrap">
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
+          <lightning-textarea 
+              label="Condition"
+              name="condition"
+              data-section="medicalHistory"
+              value={medicalHistory.condition}
+              onchange={handleChange}>
+          </lightning-textarea>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-medium-size_1-of-2">
+          <lightning-input 
+              type="date"
+              label="Diagnosed Date"
+              name="diagnosedDate"
+              data-section="medicalHistory"
+              value={medicalHistory.diagnosedDate}
+              onchange={handleChange}>
+          </lightning-input>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-m-top_small">
+          <lightning-textarea 
+              label="Notes"
+              name="notes"
+              data-section="medicalHistory"
+              value={medicalHistory.notes}
+              onchange={handleChange}>
+          </lightning-textarea>
+        </div>
+
+        <div class="slds-size_1-of-1 slds-m-top_small slds-text-color_weak">
+          <em>Optional:</em> Add medical history only if relevant. You can leave this step blank.
+        </div>
+
+      </div>
+    </template>
+
+    <!-- Footer Buttons -->
+    <div class="slds-p-around_medium slds-border_top">
+      <lightning-button 
+          variant="neutral"
+          label="Back"
+          onclick={handleBack}
+          class="slds-m-right_small"
+          disabled={isFirstStep}>
+      </lightning-button>
+
+      <template if:false={isLastStep}>
+        <lightning-button 
+            variant="brand"
+            label="Next"
+            onclick={handleNext}>
+        </lightning-button>
+      </template>
+
+      <template if:true={isLastStep}>
+        <lightning-button 
+            variant="brand"
+            label="Finish & Save"
+            onclick={handleSubmit}>
+        </lightning-button>
+      </template>
+    </div>
+
+  </lightning-card>
+</template>
