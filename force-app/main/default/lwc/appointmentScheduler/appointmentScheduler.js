@@ -33,7 +33,7 @@ export default class AppointmentScheduler extends LightningElement {
     patientSearchTerm = '';
     @track patientOptions = [];
     selectedPatientId = null;
-    selectedPatientName = ''; // Property to hold the name for the pill
+    selectedPatientName = ''; 
     selectedSlot = null;
     @track reasonForVisit = '';
     searchTimeout;
@@ -174,7 +174,6 @@ export default class AppointmentScheduler extends LightningElement {
         }
     }
 
-    // **FIXED** This now sets the patient's name for the pill display
     handlePatientSelect(event) {
         this.selectedPatientId = event.detail.value;
         const selectedOption = this.patientOptions.find(option => option.value === this.selectedPatientId);
@@ -183,7 +182,6 @@ export default class AppointmentScheduler extends LightningElement {
         }
     }
 
-    // **ADDED** This function clears the patient selection
     clearSelectedPatient() {
         this.selectedPatientId = null;
         this.selectedPatientName = '';
