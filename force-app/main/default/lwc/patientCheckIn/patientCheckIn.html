@@ -1,12 +1,12 @@
 <template>
-    <lightning-card title="Patient Check-In" icon-name="standard:checkin">
+    <lightning-card title="Today's Appointments Dashboard" icon-name="standard:checkin">
         <div class="slds-p-horizontal_medium slds-m-bottom_medium">
             <lightning-input
                 label="Search by Patient Name"
                 type="search"
                 onchange={handleSearch}
                 value={searchTerm}
-                placeholder="Type a name to search for today's scheduled patients..."
+                placeholder="Search scheduled and checked-in patients..."
             ></lightning-input>
         </div>
 
@@ -22,7 +22,7 @@
             </template>
             <template if:false={appointments.length}>
                 <div class="slds-align_absolute-center slds-p-around_medium slds-text-color_weak">
-                    No scheduled appointments found.
+                    No matching appointments found.
                 </div>
             </template>
         </div>
@@ -36,22 +36,21 @@
                 </header>
                 <div class="slds-modal__content slds-p-around_medium">
                     <p>
-                        Checking in <strong>{selectedPatientName}</strong> for their {selectedAppointmentTime} appointment.
+                        Checking in <strong>{selectedPatientName}</strong> for their appointment at
+                        <lightning-formatted-date-time
+                            value={selectedAppointmentTime}
+                            time-zone="Asia/Kolkata"
+                            hour="2-digit"
+                            minute="2-digit"
+                            hour12="true"
+                        ></lightning-formatted-date-time>.
                     </p>
-                    <lightning-formatted-date-time
-                        value={selectedAppointmentTime}
-                        time-zone="Asia/Kolkata"
-                        hour="2-digit"
-                        minute="2-digit"
-                        hour12="true"
-                    ></lightning-formatted-date-time>
                     <div class="slds-form-element slds-m-vertical_medium">
                         <span class="slds-form-element__label">Reason for Visit</span>
                         <div class="slds-form-element__control slds-p-top_x-small">
                             {selectedReasonForVisit}
                         </div>
                     </div>
-                    
                     <lightning-input
                         type="datetime"
                         label="Arrival Time"

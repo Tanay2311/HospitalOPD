@@ -33,6 +33,7 @@ export default class AppointmentScheduler extends LightningElement {
     patientSearchTerm = '';
     @track patientOptions = [];
     selectedPatientId = null;
+    selectedPatientName = ''; // Property to hold the name for the pill
     selectedSlot = null;
     @track reasonForVisit = '';
     searchTimeout;
@@ -44,6 +45,10 @@ export default class AppointmentScheduler extends LightningElement {
             { label: 'Canceled', value: 'Canceled' },
             { label: 'No Show', value: 'No Show' },
         ];
+    }
+    
+    get isBookDisabled() {
+        return !this.selectedPatientId;
     }
 
     // Wires for initial data load
@@ -127,7 +132,7 @@ export default class AppointmentScheduler extends LightningElement {
 
         const doctorPromise = this.selectedDepartment
             ? getDoctorsByDepartment({ department: this.selectedDepartment })
-            : getDoctors(); // Fallback to all doctors
+            : getDoctors();
 
         doctorPromise
             .then(result => {
@@ -153,7 +158,7 @@ export default class AppointmentScheduler extends LightningElement {
     }
 
     handlePatientSearch(event) {
-        this.patientSearchTerm = event.detail.value;
+        this.patientSearchTerm = event.target.value;
         clearTimeout(this.searchTimeout);
 
         if (this.patientSearchTerm && this.patientSearchTerm.length >= 2) {
@@ -169,8 +174,21 @@ export default class AppointmentScheduler extends LightningElement {
         }
     }
 
+    // **FIXED** This now sets the patient's name for the pill display
     handlePatientSelect(event) {
         this.selectedPatientId = event.detail.value;
+        const selectedOption = this.patientOptions.find(option => option.value === this.selectedPatientId);
+        if (selectedOption) {
+            this.selectedPatientName = selectedOption.label;
+        }
+    }
+
+    // **ADDED** This function clears the patient selection
+    clearSelectedPatient() {
+        this.selectedPatientId = null;
+        this.selectedPatientName = '';
+        this.patientOptions = [];
+        this.patientSearchTerm = '';
     }
 
     handleReasonChange(event) {
@@ -182,7 +200,6 @@ export default class AppointmentScheduler extends LightningElement {
             this.showToast('Error', 'Please select a patient.', 'error');
             return;
         }
-        // **COMPLETED** Added validation for Reason for Visit
         if (!this.reasonForVisit) {
             this.showToast('Error', 'Please enter a reason for the visit.', 'error');
             return;
@@ -194,7 +211,7 @@ export default class AppointmentScheduler extends LightningElement {
             doctorId: this.selectedDoctorId,
             startTime: this.selectedSlot.start,
             endTime: this.selectedSlot.end,
-            reasonForVisit: this.reasonForVisit // **COMPLETED** Pass reason to Apex
+            reasonForVisit: this.reasonForVisit
         })
         .then(() => {
             this.showToast('Success', 'Appointment was successfully booked.', 'success');
@@ -212,8 +229,9 @@ export default class AppointmentScheduler extends LightningElement {
         this.patientSearchTerm = '';
         this.patientOptions = [];
         this.selectedPatientId = null;
+        this.selectedPatientName = '';
         this.selectedSlot = null;
-        this.reasonForVisit = ''; // **COMPLETED** Reset reason on close
+        this.reasonForVisit = '';
     }
 
     // --- EXISTING APPOINTMENT LOGIC ---
