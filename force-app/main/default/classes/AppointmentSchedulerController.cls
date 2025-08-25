@@ -66,6 +66,10 @@ public with sharing class AppointmentSchedulerController {
 
     @AuraEnabled
     public static String scheduleAppointment(Id patientId, Id doctorId, Datetime startTime, Datetime endTime,  String reasonForVisit) {
+        if (startTime < Datetime.now()) {
+            throw new AuraHandledException('Appointments cannot be scheduled in the past.');
+        }
+        
         // 1) Doctor overlap
         List<Appointment__c> doctorConflicts = [
             SELECT Id
@@ -110,6 +114,10 @@ public with sharing class AppointmentSchedulerController {
 
     @AuraEnabled
     public static String updateAppointmentTime(Id appointmentId, Datetime newStartTime, Datetime newEndTime) {
+        if (newStartTime < Datetime.now()) {
+            throw new AuraHandledException('Appointments cannot be rescheduled to the past.');
+        }
+        
         try {
             Appointment__c apptToUpdate = [
                 SELECT Id, Doctor__c, Patient__c

@@ -99,6 +99,9 @@ export default class AppointmentScheduler extends LightningElement {
             },
             editable: true,
             selectable: true,
+            selectAllow: (selectInfo) => {
+                return selectInfo.start > new Date();
+            },
             events: (fetchInfo, successCallback, failureCallback) => { this.loadEvents(fetchInfo, successCallback, failureCallback); },
             select: (selectionInfo) => { this.handleSlotSelect(selectionInfo); },
             eventDrop: (info) => { this.handleEventDrop(info); },
@@ -232,8 +235,13 @@ export default class AppointmentScheduler extends LightningElement {
         this.reasonForVisit = '';
     }
 
-    // --- EXISTING APPOINTMENT LOGIC ---
+    
     handleEventDrop(info) {
+        if (info.event.start < new Date()) {
+            this.showToast('Error', 'Appointments cannot be rescheduled to the past.', 'error');
+            info.revert(); 
+            return;
+        }
         this.isLoading = true;
         updateAppointmentTime({
             appointmentId: info.event.id,

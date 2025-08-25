@@ -55,9 +55,9 @@
             if (payload.patient.contactNumber.replaceAll('[^0-9]','').length() != 10) {
                 throw new AuraHandledException('Contact Number must be 10 digits.');
             }
-            if (String.isNotBlank(payload.patient.email) && !Pattern.matches('...', payload.patient.email)) {
-                throw new AuraHandledException('Please provide a valid email address.');
-            }
+            // if (String.isNotBlank(payload.patient.email) && !Pattern.matches('...', payload.patient.email)) {
+            //     throw new AuraHandledException('Please provide a valid email address.');
+            // }
             if (String.isBlank(payload.patient.gender)) {
                 throw new AuraHandledException('Gender is required.');
             }
