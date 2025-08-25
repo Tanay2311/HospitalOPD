@@ -1,8 +1,33 @@
 <template>
-    <lightning-card title="Today's Appointments Dashboard" icon-name="standard:checkin">
+    <lightning-card title="Appointments Dashboard" icon-name="standard:checkin">
         <div class="slds-p-horizontal_medium slds-m-bottom_medium">
+            <div class="slds-grid slds-gutters slds-m-bottom_small slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-button-group>
+                        <lightning-button label="Yesterday" name="YESTERDAY" onclick={handleFilterClick}></lightning-button>
+                        <lightning-button label="Today" name="TODAY" variant="brand" onclick={handleFilterClick}></lightning-button>
+                        <lightning-button label="Tomorrow" name="TOMORROW" onclick={handleFilterClick}></lightning-button>
+                    </lightning-button-group>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-button-group>
+                        <lightning-button label="Custom Date" name="CUSTOM_DATE" onclick={handleFilterClick}></lightning-button>
+                        <lightning-button label="Custom Range" name="CUSTOM_RANGE" onclick={handleFilterClick}></lightning-button>
+                    </lightning-button-group>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-gutters slds-m-bottom_small" if:true={showCustomDateInputs}>
+                <div class="slds-col">
+                    <lightning-input type="date" label="Start Date" name="startDate" value={startDate} onchange={handleDateChange}></lightning-input>
+                </div>
+                <div class="slds-col" if:true={isCustomRangeFilter}>
+                    <lightning-input type="date" label="End Date" name="endDate" value={endDate} onchange={handleDateChange}></lightning-input>
+                </div>
+            </div>
+            
             <lightning-input
-                label="Search by Patient Name"
+                label="Search by Patient Name or Contact Number"
                 type="search"
                 onchange={handleSearch}
                 value={searchTerm}
